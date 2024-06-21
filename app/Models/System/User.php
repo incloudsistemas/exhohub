@@ -5,10 +5,10 @@ namespace App\Models\System;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Casts\DateCast;
-use App\Enums\ProfileInfos\EducationalLevel;
-use App\Enums\ProfileInfos\Gender;
-use App\Enums\ProfileInfos\MaritalStatus;
-use App\Enums\ProfileInfos\UserStatus;
+use App\Enums\ProfileInfos\EducationalLevelEnum;
+use App\Enums\ProfileInfos\GenderEnum;
+use App\Enums\ProfileInfos\MaritalStatusEnum;
+use App\Enums\ProfileInfos\UserStatusEnum;
 use App\Models\Polymorphics\Address;
 use App\Observers\System\UserObserver;
 use App\Services\System\RoleService;
@@ -75,7 +75,11 @@ class User extends Authenticatable implements FilamentUser, HasMedia
             'password'          => 'hashed',
             'additional_emails' => 'array',
             'phones'            => 'array',
-            'birth_date'        => DateCast::class
+            'gender'            => GenderEnum::class,
+            'birth_date'        => DateCast::class,
+            'marital_status'    => MaritalStatusEnum::class,
+            'educational_level' => EducationalLevelEnum::class,
+            'status'            => UserStatusEnum::class,
         ];
     }
 
@@ -98,7 +102,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
 
     public function canAccessPanel(Panel $panel): bool
     {
-        if ($this->status != 1) {
+        if ($this->status->value != 1) {
             // auth()->logout();
             return false;
         }
@@ -215,36 +219,12 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         return !empty($additionalPhones) ? $additionalPhones : null;
     }
 
-    public function getDisplayGenderAttribute(): ?string
-    {
-        return Gender::tryFrom($this->gender)
-            ?->label();
-    }
-
     public function getDisplayBirthDateAttribute(): ?string
     {
         // return $this->birth_date?->format('d/m/Y');
         return isset($this->birth_date)
             ? ConvertEnToPtBrDate(date: $this->birth_date)
             : null;
-    }
-
-    public function getDisplayMaritalStatusAttribute(): ?string
-    {
-        return MaritalStatus::tryFrom($this->marital_status)
-            ?->label();
-    }
-
-    public function getDisplayEducationalLevelAttribute(): ?string
-    {
-        return EducationalLevel::tryFrom($this->educational_level)
-            ?->label();
-    }
-
-    public function getDisplayStatusAttribute(): ?string
-    {
-        return UserStatus::tryFrom($this->status)
-            ?->label();
     }
 
     public function getAttachmentsAttribute()

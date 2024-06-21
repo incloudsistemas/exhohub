@@ -31,18 +31,18 @@ class UsersSeeder extends Seeder
         $superadmin->assignRole('Superadministrador');
 
         // Delay of 1 seconds
-        sleep(1);
+        // sleep(1);
 
         // user admin
-        $admin = User::create([
-            'name'              => 'Admin',
-            'email'             => 'admin@incloudsistemas.com.br',
-            'email_verified_at' => now(),
-            'password'          => Hash::make('password'),
-            'remember_token'    => Str::random(10),
-        ]);
+        // $admin = User::create([
+        //     'name'              => 'Admin',
+        //     'email'             => 'admin@incloudsistemas.com.br',
+        //     'email_verified_at' => now(),
+        //     'password'          => Hash::make('password'),
+        //     'remember_token'    => Str::random(10),
+        // ]);
 
-        $admin->assignRole('Administrador');
+        // $admin->assignRole('Administrador');
     }
 
     private function truncateTable()

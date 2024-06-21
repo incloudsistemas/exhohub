@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\System;
 
-use App\Enums\ProfileInfos\EducationalLevel;
-use App\Enums\ProfileInfos\Gender;
-use App\Enums\ProfileInfos\MaritalStatus;
-use App\Enums\ProfileInfos\UserStatus;
+use App\Enums\ProfileInfos\EducationalLevelEnum;
+use App\Enums\ProfileInfos\GenderEnum;
+use App\Enums\ProfileInfos\MaritalStatusEnum;
+use App\Enums\ProfileInfos\UserStatusEnum;
 use App\Filament\Resources\RelationManagers\AddressesRelationManager;
 use App\Filament\Resources\RelationManagers\MediaRelationManager;
 use App\Filament\Resources\System\UserResource\Pages;
@@ -217,11 +217,10 @@ class UserResource extends Resource
                     ->dehydrated(false),
                 Forms\Components\Select::make('status')
                     ->label(__('Status'))
-                    ->options(UserStatus::getArray())
+                    ->options(UserStatusEnum::class)
                     ->default(1)
                     ->selectablePlaceholder(false)
                     ->required()
-                    ->in(UserStatus::getIndexes())
                     ->native(false),
             ])
             ->columns(2)
@@ -243,8 +242,7 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\Select::make('gender')
                     ->label(__('Sexo'))
-                    ->options(Gender::getArray())
-                    ->in(Gender::getIndexes())
+                    ->options(GenderEnum::class)
                     ->native(false),
                 Forms\Components\DatePicker::make('birth_date')
                     ->label(__('Dt. nascimento'))
@@ -252,15 +250,13 @@ class UserResource extends Resource
                     ->maxDate(now()),
                 Forms\Components\Select::make('marital_status')
                     ->label(__('Estado civil'))
-                    ->options(MaritalStatus::getArray())
+                    ->options(MaritalStatusEnum::class)
                     ->searchable()
-                    ->in(MaritalStatus::getIndexes())
                     ->native(false),
                 Forms\Components\Select::make('educational_level')
                     ->label(__('Escolaridade'))
-                    ->options(EducationalLevel::getArray())
+                    ->options(EducationalLevelEnum::class)
                     ->searchable()
-                    ->in(EducationalLevel::getIndexes())
                     ->native(false),
                 Forms\Components\TextInput::make('nationality')
                     ->label(__('Nacionalidade'))
@@ -315,7 +311,7 @@ class UserResource extends Resource
                                         fn (User $record): string =>
                                         self::getUrl('edit', ['record' => $record]),
                                     )
-                                    ->disabled(
+                                    ->hidden(
                                         fn (): bool =>
                                         !auth()->user()->can('Editar Usuários')
                                     ),
@@ -374,13 +370,9 @@ class UserResource extends Resource
                     $service->tableSearchByPhone(query: $query, search: $search)
                 )
                 ->toggleable(isToggledHiddenByDefault: false),
-            Tables\Columns\TextColumn::make('display_status')
+            Tables\Columns\TextColumn::make('status')
                 ->label(__('Status'))
                 ->badge()
-                ->color(
-                    fn (User $record): ?string =>
-                    UserStatus::getColor(status: $record->status),
-                )
                 ->searchable(
                     query: fn (UserService $service, Builder $query, string $search): Builder =>
                     $service->tableSearchByStatus(query: $query, search: $search)
@@ -421,7 +413,7 @@ class UserResource extends Resource
             Tables\Filters\SelectFilter::make('status')
                 ->label(__('Status'))
                 ->multiple()
-                ->options(UserStatus::getArray()),
+                ->options(UserStatusEnum::class),
             Tables\Filters\Filter::make('created_at')
                 ->label(__('Cadastro'))
                 ->form([
@@ -547,7 +539,7 @@ class UserResource extends Resource
                                         fn (?string $state): bool =>
                                         !empty($state),
                                     ),
-                                Infolists\Components\TextEntry::make('display_gender')
+                                Infolists\Components\TextEntry::make('gender')
                                     ->label(__('Sexo'))
                                     ->visible(
                                         fn (?string $state): bool =>
@@ -559,13 +551,13 @@ class UserResource extends Resource
                                         fn (?string $state): bool =>
                                         !empty($state),
                                     ),
-                                Infolists\Components\TextEntry::make('display_marital_status')
+                                Infolists\Components\TextEntry::make('marital_status')
                                     ->label(__('Estado civil'))
                                     ->visible(
                                         fn (?string $state): bool =>
                                         !empty($state),
                                     ),
-                                Infolists\Components\TextEntry::make('display_educational_level')
+                                Infolists\Components\TextEntry::make('educational_level')
                                     ->label(__('Escolaridade'))
                                     ->visible(
                                         fn (?string $state): bool =>
@@ -612,13 +604,9 @@ class UserResource extends Resource
                                     ->columnSpanFull(),
                                 Infolists\Components\Grid::make(['default' => 3])
                                     ->schema([
-                                        Infolists\Components\TextEntry::make('display_status')
+                                        Infolists\Components\TextEntry::make('status')
                                             ->label(__('Status'))
-                                            ->badge()
-                                            ->color(
-                                                fn (User $record): string =>
-                                                UserStatus::getColor(status: $record->status),
-                                            ),
+                                            ->badge(),
                                         Infolists\Components\TextEntry::make('created_at')
                                             ->label(__('Cadastro'))
                                             ->dateTime('d/m/Y H:i'),

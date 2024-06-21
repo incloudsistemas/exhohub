@@ -2,7 +2,7 @@
 
 namespace App\Models\Polymorphics;
 
-use App\Enums\ProfileInfos\State;
+use App\Enums\ProfileInfos\UfEnum;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -45,6 +45,7 @@ class Address extends Model
      */
     protected $casts = [
         'is_main' => 'boolean',
+        'uf'      => UfEnum::class
     ];
 
     /**
@@ -67,22 +68,10 @@ class Address extends Model
      *
      */
 
-    protected function state(): Attribute
-    {
-        return Attribute::make(
-            set: fn () => isset($this->uf) ? State::tryFrom($this->uf)?->label() : null,
-        );
-    }
-
     /**
      * CUSTOMS.
      *
      */
-
-    protected function getDisplayUfAttribute(): ?string
-    {
-        return $this->uf ? State::tryFrom($this->uf)?->label() : null;
-    }
 
     public function getDisplayFullAddressAttribute(): ?string
     {
@@ -104,7 +93,7 @@ class Address extends Model
             $components[] = trim($this->district);
         }
 
-        $components[] = $this->city . '-' . $this->uf;
+        $components[] = $this->city . '-' . $this->uf->name;
         $components[] = $this->zipcode;
 
         return implode(', ', $components);
@@ -125,39 +114,6 @@ class Address extends Model
         if (!empty(trim($this->district))) {
             $components[] = trim($this->district);
         }
-
-        return implode(', ', $components);
-    }
-
-    public function getDisplayDistrictCityUfAttribute(): ?string
-    {
-        $components = [];
-
-        if (!empty(trim($this->district))) {
-            $components[] = trim($this->district);
-        }
-
-        $components[] = $this->city . '-' . $this->uf;
-
-        return implode(', ', $components);
-    }
-
-    public function getDisplayStreetCityUfAttribute(): ?string
-    {
-        $components = [];
-
-        if (!empty(trim($this->address_line))) {
-            $components[] = trim($this->address_line);
-        }
-
-        $components[] = $this->city . '-' . $this->uf;
-
-        return implode(', ', $components);
-    }
-
-    public function getDisplayCityUfAttribute(): ?string
-    {
-        $components[] = $this->city . '-' . $this->uf;
 
         return implode(', ', $components);
     }

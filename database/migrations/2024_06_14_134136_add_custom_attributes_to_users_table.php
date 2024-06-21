@@ -30,7 +30,7 @@ return new class extends Migration
                 // 1 - 'Solteiro(a)', 2 - 'Casado(a)', 3 - 'Divorciado(a)', 4 - 'Viúvo(a)', 5 - 'Separado(a)', 6 - 'Companheiro(a)'.
                 $table->char('marital_status', 1)->nullable();
                 // Escolaridade
-                //1 - 'Fundamental', 2 - 'Médio', 3 - 'Superior', 4 - 'Pós-graduação', 5 - 'Mestrado', 6 - 'Doutorado'.
+                // 1 - 'Fundamental', 2 - 'Médio', 3 - 'Superior', 4 - 'Pós-graduação', 5 - 'Mestrado', 6 - 'Doutorado'.
                 $table->char('educational_level', 1)->nullable();
                 // Nacionalidade
                 $table->string('nationality')->nullable();

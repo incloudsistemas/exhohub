@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\RelationManagers;
 
-use App\Enums\ProfileInfos\State;
+use App\Enums\ProfileInfos\UfEnum;
 use App\Models\Polymorphics\Address;
 use App\Services\Polymorphics\AddressService;
 use Closure;
@@ -15,7 +15,6 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Support;
 
 class AddressesRelationManager extends RelationManager
 {
@@ -70,10 +69,9 @@ class AddressesRelationManager extends RelationManager
                     ->maxLength(255),
                 Forms\Components\Select::make('uf')
                     ->label(__('Estado'))
-                    ->options(State::getArray())
+                    ->options(UfEnum::class)
                     ->searchable()
                     ->required()
-                    ->in(State::getIndexes())
                     ->native(false),
                 Forms\Components\TextInput::make('city')
                     ->label(__('Cidade'))
@@ -138,7 +136,7 @@ class AddressesRelationManager extends RelationManager
                     ->label(__('Cidade/Uf'))
                     ->formatStateUsing(
                         fn (Address $record): string =>
-                        "{$record->city}-{$record->uf}"
+                        "{$record->city}-{$record->uf->name}"
                     )
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
@@ -234,8 +232,8 @@ class AddressesRelationManager extends RelationManager
                 Infolists\Components\TextEntry::make('city')
                     ->label(__('Cidade/Uf'))
                     ->formatStateUsing(
-                        fn (Address $address): string =>
-                        "{$address->city}-{$address->uf}"
+                        fn (Address $record): string =>
+                        "{$record->city}-{$record->uf->name}"
                     ),
                 Infolists\Components\TextEntry::make('district')
                     ->label(__('Bairro'))

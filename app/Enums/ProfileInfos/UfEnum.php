@@ -2,7 +2,9 @@
 
 namespace App\Enums\ProfileInfos;
 
-enum State: string
+use Filament\Support\Contracts\HasLabel;
+
+enum UfEnum: string implements HasLabel
 {
     case AC = 'AC';
     case AL = 'AL';
@@ -32,7 +34,7 @@ enum State: string
     case SE = 'SE';
     case TO = 'TO';
 
-    public function label(): string
+    public function getLabel(): string
     {
         return match ($this) {
             self::AC => 'Acre',
@@ -63,18 +65,5 @@ enum State: string
             self::SE => 'Sergipe',
             self::TO => 'Tocantins',
         };
-    }
-
-    public static function getArray(): array
-    {
-        return array_combine(
-            array_column(self::cases(), 'value'),
-            array_map(fn ($enum) => $enum->label(), self::cases())
-        );
-    }
-
-    public static function getIndexes(): array
-    {
-        return array_map(fn ($enum) => $enum->value, self::cases());
     }
 }

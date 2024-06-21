@@ -2,9 +2,9 @@
 
 namespace App\Filament\Pages\Auth;
 
-use App\Enums\ProfileInfos\EducationalLevel;
-use App\Enums\ProfileInfos\Gender;
-use App\Enums\ProfileInfos\MaritalStatus;
+use App\Enums\ProfileInfos\EducationalLevelEnum;
+use App\Enums\ProfileInfos\GenderEnum;
+use App\Enums\ProfileInfos\MaritalStatusEnum;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Pages\Auth\EditProfile as BaseEditProfile;
@@ -163,8 +163,7 @@ class EditProfile extends BaseEditProfile
                             ->maxLength(255),
                         Forms\Components\Select::make('gender')
                             ->label(__('Sexo'))
-                            ->options(Gender::getArray())
-                            ->in(Gender::getIndexes())
+                            ->options(GenderEnum::class)
                             ->native(false),
                         Forms\Components\DatePicker::make('birth_date')
                             ->label(__('Dt. nascimento'))
@@ -172,15 +171,13 @@ class EditProfile extends BaseEditProfile
                             ->maxDate(now()),
                         Forms\Components\Select::make('marital_status')
                             ->label(__('Estado civil'))
-                            ->options(MaritalStatus::getArray())
+                            ->options(MaritalStatusEnum::class)
                             ->searchable()
-                            ->in(MaritalStatus::getIndexes())
                             ->native(false),
                         Forms\Components\Select::make('educational_level')
                             ->label(__('Escolaridade'))
-                            ->options(EducationalLevel::getArray())
+                            ->options(EducationalLevelEnum::class)
                             ->searchable()
-                            ->in(EducationalLevel::getIndexes())
                             ->native(false),
                         Forms\Components\TextInput::make('nationality')
                             ->label(__('Nacionalidade'))
