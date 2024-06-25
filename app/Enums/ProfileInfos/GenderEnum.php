@@ -2,10 +2,13 @@
 
 namespace App\Enums\ProfileInfos;
 
+use App\Traits\EnumHelper;
 use Filament\Support\Contracts\HasLabel;
 
 enum GenderEnum: string implements HasLabel
 {
+    use EnumHelper;
+
     case MASCULINE = 'M';
     case FEMININE  = 'F';
 

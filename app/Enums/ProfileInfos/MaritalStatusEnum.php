@@ -2,10 +2,13 @@
 
 namespace App\Enums\ProfileInfos;
 
+use App\Traits\EnumHelper;
 use Filament\Support\Contracts\HasLabel;
 
 enum MaritalStatusEnum: string implements HasLabel
 {
+    use EnumHelper;
+
     case SINGLE    = '1';
     case MARRIED   = '2';
     case DIVORCED  = '3';

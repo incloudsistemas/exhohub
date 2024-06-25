@@ -110,13 +110,8 @@ class MediaRelationManager extends RelationManager
                         $service->mutateFormDataToCreate(ownerRecord: $this->ownerRecord, data: $data)
                     )
                     ->using(
-                        function (array $data, string $model): Model {
-                            foreach ($data as $item) {
-                                $model::create($item);
-                            }
-
-                            return $this->ownerRecord;
-                        }
+                        fn (MediaService $service, string $model, array $data): Model =>
+                        $service->createAction(data: $data, model: $model, ownerRecord: $this->ownerRecord),
                     ),
             ])
             ->actions([
@@ -149,12 +144,8 @@ class MediaRelationManager extends RelationManager
                         ->dropdown(false),
                     Tables\Actions\DeleteAction::make()
                         ->action(
-                            function (Media $record): void {
-                                Storage::disk('public')
-                                    ->delete($record->file_name);
-
-                                $record->delete();
-                            }
+                            fn (MediaService $service, Media $record): bool =>
+                            $service->deleteAction(media: $record),
                         ),
                 ]),
             ])

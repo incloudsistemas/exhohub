@@ -15,11 +15,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
-use Filament\Support;
 
 class PermissionResource extends Resource
 {
     protected static ?string $model = Permission::class;
+
+    protected static ?string $slug = 'permissions';
 
     // protected static ?string $recordTitleAttribute = 'name';
 

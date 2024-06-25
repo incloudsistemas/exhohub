@@ -2,10 +2,13 @@
 
 namespace App\Enums\ProfileInfos;
 
+use App\Traits\EnumHelper;
 use Filament\Support\Contracts\HasLabel;
 
 enum UfEnum: string implements HasLabel
 {
+    use EnumHelper;
+
     case AC = 'AC';
     case AL = 'AL';
     case AP = 'AP';

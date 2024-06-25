@@ -2,10 +2,13 @@
 
 namespace App\Enums\ProfileInfos;
 
+use App\Traits\EnumHelper;
 use Filament\Support\Contracts\HasLabel;
 
 enum EducationalLevelEnum: string implements HasLabel
 {
+    use EnumHelper;
+
     case ELEMENTARY    = '1';
     case HIGH_SCHOOL   = '2';
     case BACHELOR      = '3';

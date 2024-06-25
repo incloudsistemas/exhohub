@@ -2,11 +2,14 @@
 
 namespace App\Enums;
 
+use App\Traits\EnumHelper;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
 enum DefaultStatusEnum: string implements HasLabel, HasColor
 {
+    use EnumHelper;
+
     case ACTIVE   = '1';
     case INACTIVE = '0';
 

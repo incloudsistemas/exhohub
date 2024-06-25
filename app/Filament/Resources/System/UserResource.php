@@ -23,16 +23,16 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Support;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\HtmlString;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
+
+    protected static ?string $slug = 'users';
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -586,9 +586,9 @@ class UserResource extends Resource
                                     ->label('Endereço(s)')
                                     ->schema([
                                         Infolists\Components\TextEntry::make('display_full_address')
-                                                ->label(__('Endereço'))
-                                                ->hiddenLabel()
-                                                ->columnSpan(2),
+                                            ->label(__('Endereço'))
+                                            ->hiddenLabel()
+                                            ->columnSpan(2),
                                         Infolists\Components\TextEntry::make('name')
                                             ->label(__('Tipo'))
                                             ->visible(
@@ -597,8 +597,7 @@ class UserResource extends Resource
                                             ),
                                     ])
                                     ->visible(
-                                        fn (array|string|null $state): bool =>
-                                        (is_array($state) && !empty($state[0])) || (!is_array($state) && !empty($state)),
+                                        fn (array|string|null $state): bool => (is_array($state) && !empty($state[0])) || (!is_array($state) && !empty($state)),
                                     )
                                     ->columns(3)
                                     ->columnSpanFull(),
@@ -621,13 +620,11 @@ class UserResource extends Resource
                                     ->label('Arquivo(s)')
                                     ->schema([
                                         Infolists\Components\TextEntry::make('name')
-                                            ->label(__('Nome'))
-                                            ->hiddenLabel(),
+                                            ->label(__('Nome')),
                                         Infolists\Components\TextEntry::make('mime_type')
-                                                ->label(__('Mime')),
+                                            ->label(__('Mime')),
                                         Infolists\Components\TextEntry::make('size')
                                             ->label(__('Tamanho'))
-                                            ->hiddenLabel()
                                             ->state(
                                                 fn (Media $record): string =>
                                                 AbbrNumberFormat($record->size),
@@ -640,8 +637,7 @@ class UserResource extends Resource
                                             ->hintColor('primary'),
                                     ])
                                     ->visible(
-                                        fn (array|string|null $state): bool =>
-                                        (is_array($state) && !empty($state[0])) || (!is_array($state) && !empty($state)),
+                                        fn (array|string|null $state): bool => (is_array($state) && !empty($state[0])) || (!is_array($state) && !empty($state)),
                                     )
                                     ->columns(3)
                                     ->columnSpanFull(),

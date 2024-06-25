@@ -4,6 +4,7 @@ namespace App\Services\Polymorphics;
 
 use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Support\Facades\Storage;
 
@@ -21,6 +22,7 @@ class MediaService extends BaseService
 
         $data['collection_name'] = 'attachments';
         $data['disk'] = 'public';
+        $data['conversions_disk'] = 'public';
         $data['manipulations'] = $data['manipulations'] ?? [];
         $data['custom_properties'] = $data['custom_properties'] ?? [];
         $data['generated_conversions'] = $data['generated_conversions'] ?? [];
@@ -44,6 +46,17 @@ class MediaService extends BaseService
         return $processedData;
     }
 
+    public function createAction(array $data, string $model, Model $ownerRecord): Model
+    {
+        return DB::transaction(function () use ($data, $model, $ownerRecord): Model {
+            foreach ($data as $item) {
+                $model::create($item);
+            }
+
+            return $ownerRecord;
+        });
+    }
+
     public function mutateFormDataToEdit(Media $media, array $data): array
     {
         if ($media->file_name !== $data['file_name']) {
@@ -55,5 +68,15 @@ class MediaService extends BaseService
         }
 
         return $data;
+    }
+
+    public function deleteAction(Media $media): bool
+    {
+        return DB::transaction(function () use ($media): bool {
+            Storage::disk('public')
+                ->delete($media->file_name);
+
+            return $media->delete();
+        });
     }
 }

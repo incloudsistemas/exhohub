@@ -2,7 +2,7 @@
 
 namespace App\Services\System;
 
-use App\Enums\ProfileInfos\UserStatus;
+use App\Enums\ProfileInfos\UserStatusEnum;
 use App\Models\System\User;
 use App\Services\BaseService;
 use Filament\Notifications\Notification;
@@ -31,7 +31,7 @@ class UserService extends BaseService
 
     public function tableSearchByStatus(Builder $query, string $search): Builder
     {
-        $statuses = UserStatus::getArray();
+        $statuses = UserStatusEnum::getAssociativeArray();
 
         $matchingStatuses = [];
         foreach ($statuses as $index => $status) {
@@ -49,7 +49,7 @@ class UserService extends BaseService
 
     public function tableSortByStatus(Builder $query, string $direction): Builder
     {
-        $statuses = UserStatus::getArray();
+        $statuses = UserStatusEnum::getAssociativeArray();
 
         $caseParts = [];
         $bindings = [];
