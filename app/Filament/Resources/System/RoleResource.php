@@ -237,4 +237,11 @@ class RoleResource extends Resource
             'edit'   => Pages\EditRole::route('/{record}/edit'),
         ];
     }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $user = auth()->user();
+        return parent::getEloquentQuery()
+            ->byAuthUserRoles(user: $user);
+    }
 }
