@@ -2,7 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Pages\Auth\EditProfile;
+use App\Filament\Pages\System\EditProfile;
 use App\Filament\Widgets\AppInfoWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -38,7 +38,8 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(asset('images/i2c-logo-short.png'))
             ->profile(EditProfile::class)
             ->userMenuItems([
-                'profile' => Navigation\MenuItem::make()->label('Meu Perfil'),
+                'profile' => Navigation\MenuItem::make()
+                    ->label('Meu Perfil'),
                 Navigation\MenuItem::make()
                     ->label('Website')
                     ->url('/')
