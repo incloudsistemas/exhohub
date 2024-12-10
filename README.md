@@ -1,6 +1,6 @@
 <p align="center"><a href="https://exho.com.br" target="_blank"><img src="https://github.com/incloudsistemas/exhoestate/blob/main/public/images/i2c-logo-large.png" alt="Exho logo."></a></p>
 
-## Exho | Innovative Real Estate Technology.
+## ExhoHub | Innovative Real Estate Technology.
 
 Real estate hub that integrates website (CMS), CRM, financial and marketing functionalities, built atop the <a href="https://laravel.com/" target="_blank">Laravel framework</a> and <a href="https://tallstack.dev/" target="_blank">TALL Stack</a> using <a href="https://filamentphp.com/" target="_blank">Filament V.3</a>. It offers a comprehensive solution for real estate agencies looking to optimize their processes and achieve their business goals more efficiently.
 
@@ -18,9 +18,9 @@ Real estate hub that integrates website (CMS), CRM, financial and marketing func
 - Clone the repository and cd into it:
 
 ```bash
-git clone https://github.com/incloudsistemas/exho.git
+git clone https://github.com/incloudsistemas/exhohub.git
 
-cd exho
+cd exhohub
 ```
 
 - Install backend dependencies:
