@@ -1,0 +1,117 @@
+/* ----------------------------------------------------------------
+	Global Custom CSS
+
+	Add all your Custom Styled CSS here for New Styles or
+	Overwriting Default Theme Styles for Better Handling Updates
+-----------------------------------------------------------------*/
+
+/* Extra small devices (phones, 600px and down) */
+/* @media only screen and (max-width: 600px) {...} */
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+/* @media only screen and (min-width: 600px) {...} */
+
+/* Medium devices (landscape tablets, 768px and up) */
+/* @media only screen and (min-width: 768px) {...} */
+
+/* Large devices (laptops/desktops, 992px and up) */
+/* @media only screen and (min-width: 992px) {...} */
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+/* @media only screen and (min-width: 1200px) {...} */
+
+.custom-link {
+    cursor: pointer !important;
+}
+
+a.no-cursor {
+    cursor: auto;
+}
+
+/* FORM
+-----------------------------------------------------------------*/
+
+.indicator-progress {
+    display: none;
+}
+
+.was-validated .form-control:valid,
+.form-control.is-valid {
+    background-image: none;
+}
+
+.bootstrap-select>.dropdown-toggle {
+    background: #FFF;
+    border: 1px solid #eaeaea;
+}
+
+.bootstrap-select .actions-btn {
+    border: 1px solid #FFF;
+}
+
+/* FORM ERRORS */
+.fv-plugins-message-container {
+    font-size: 12px;
+}
+
+/* WHATSAPP BTN
+-----------------------------------------------------------------*/
+
+#whatsapp-button {
+    --cnvs-whatsapp-btn-size: 3.5rem;
+    --cnvs-whatsapp-btn-bg: var(--cnvs-color-whatsapp);
+    --cnvs-whatsapp-btn-icon-size: 1.5rem;
+    --cnvs-whatsapp-btn-icon-color: #fff;
+    --cnvs-whatsapp-btn-position-boxed-top: auto;
+    --cnvs-whatsapp-btn-position-boxed-left: 25px;
+    --cnvs-whatsapp-btn-position-boxed-right: auto;
+    --cnvs-whatsapp-btn-position-boxed-bottom: 45px;
+    --cnvs-whatsapp-btn-position-botom: 30px;
+    --cnvs-whatsapp-btn-border-radius: 100px;
+    --cnvs-whatsapp-btn-hover-color: #1FA463;
+    z-index: 9;
+    position: fixed;
+    width: var(--cnvs-whatsapp-btn-size);
+    height: var(--cnvs-whatsapp-btn-size);
+    line-height: var(--cnvs-whatsapp-btn-size);
+    background-color: var(--cnvs-whatsapp-btn-bg);
+    font-size: var(--cnvs-whatsapp-btn-icon-size);
+    text-align: center;
+    color: var(--cnvs-whatsapp-btn-icon-color);
+    top: var(--cnvs-whatsapp-btn-position-boxed-top);
+    left: var(--cnvs-whatsapp-btn-position-boxed-left);
+    right: var(--cnvs-whatsapp-btn-position-boxed-right);
+    bottom: var(--cnvs-whatsapp-btn-position-boxed-bottom);
+    cursor: pointer;
+    border-radius: var(--cnvs-whatsapp-btn-border-radius);
+    opacity: 1;
+    transition: background-color 0.2s linear, opacity 0.4s ease;
+    display: none;
+}
+
+#whatsapp-button:hover {
+    background-color: var(--cnvs-whatsapp-btn-hover-color);
+}
+
+/* SWAL2
+-----------------------------------------------------------------*/
+
+h2.swal2-title {
+    font-size: 1.3em;
+}
+
+#swal2-html-container {
+    font-size: 16px;
+    margin: 0.5em 1.6em 0.3em;
+}
+
+.swal2-actions {
+    margin: 0.8em auto 0 !important;
+}
+
+/* GOOGLE RECAPTCHA
+-----------------------------------------------------------------*/
+
+.grecaptcha-badge {
+    visibility: hidden;
+}

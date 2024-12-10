@@ -2,13 +2,16 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\System\CreateRealtor;
 use App\Filament\Pages\System\EditProfile;
 use App\Filament\Widgets\AppInfoWidget;
+use App\Http\Middleware\PendingUserBlockAccess;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation;
 use Filament\Pages;
+use Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -27,15 +30,18 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->id('i2c-admin')
-            ->path('i2c-admin')
+            ->id('admin')
+            ->path('/admin')
+            ->registration(CreateRealtor::class)
+            // ->emailVerification(EmailVerificationPrompt::class)
             ->login()
             ->passwordReset()
             ->colors([
-                'primary' => Color::Purple,
+                'primary' => Color::Teal,
             ])
             ->favicon(url: asset('images/favicon.ico'))
-            ->brandLogo(asset('images/i2c-logo-short.png'))
+            ->brandLogo(asset('images/i2c-logo.png'))
+            ->darkModeBrandLogo(asset('images/i2c-logo-dark.png'))
             ->profile(EditProfile::class)
             ->userMenuItems([
                 'profile' => Navigation\MenuItem::make()
@@ -44,8 +50,24 @@ class AdminPanelProvider extends PanelProvider
                     ->label('Website')
                     ->url('/')
                     ->icon('heroicon-o-globe-alt'),
-                'logout' => Navigation\MenuItem::make()->label('Sair'),
+                'logout' => Navigation\MenuItem::make()
+                    ->label('Sair'),
             ])
+            ->navigationGroups([
+                Navigation\NavigationGroup::make()
+                    ->label('CRM'),
+                // Navigation\NavigationGroup::make()
+                //     ->label('Financeiro'),
+                Navigation\NavigationGroup::make()
+                    ->label('Imóveis'),
+                Navigation\NavigationGroup::make()
+                    ->label('CMS & Marketing'),
+                Navigation\NavigationGroup::make()
+                    ->label('Suporte'),
+                Navigation\NavigationGroup::make()
+                    ->label('Sistema'),
+            ])
+            ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -67,6 +89,8 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+
+                PendingUserBlockAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

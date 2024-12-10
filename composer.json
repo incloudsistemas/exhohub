@@ -1,7 +1,7 @@
 {
-    "name": "laravel/incloudcodile15_starter_kit",
+    "name": "laravel/exho",
     "type": "project",
-    "description": "The InCloud skeleton engine application for the InCloudCodile15.",
+    "description": "Exho - I2C 15 | Real Estate - Website (CMS), CRM, Financial and Marketing Automation.",
     "keywords": [
         "framework",
         "laravel",
@@ -9,6 +9,7 @@
         "tall stack",
         "incloud",
         "incloudcodile",
+        "i2c",
         "website",
         "cms",
         "marketing automation",
@@ -18,12 +19,20 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "artesaos/seotools": "^1.3",
         "browner12/helpers": "^3.6",
+        "cviebrock/eloquent-sluggable": "^11.0",
         "filament/filament": "^3.2",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
+        "intervention/image": "^3.7",
+        "jenssegers/agent": "^2.6",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
-        "spatie/laravel-permission": "^6.7"
+        "maatwebsite/excel": "^3.1",
+        "mokhosh/filament-kanban": "^2.9",
+        "spatie/eloquent-sortable": "^4.4",
+        "spatie/laravel-permission": "^6.7",
+        "spatie/laravel-responsecache": "^7.6"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

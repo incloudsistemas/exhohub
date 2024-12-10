@@ -1,8 +1,8 @@
-<p align="center"><a href="https://incloudsistemas.com.br" target="_blank"><img src="https://github.com/incloudsistemas/incloudcodile15_starter_kit/blob/main/public/images/i2c-logo-large.png" alt="The i2C | InCloud skeleton engine application logo."></a></p>
+<p align="center"><a href="https://exho.com.br" target="_blank"><img src="https://github.com/incloudsistemas/exhoestate/blob/main/public/images/i2c-logo-large.png" alt="ExhoEstate logo."></a></p>
 
-## InCloudCodile15 - i2C | InCloud skeleton engine application.
+## ExhoEstate | Innovative Real Estate Technology.
 
-InCloudCodile15 starter kit built atop the <a href="https://laravel.com/" target="_blank">Laravel framework</a> and <a href="https://tallstack.dev/" target="_blank">TALL Stack</a> using <a href="https://filamentphp.com/" target="_blank">Filament V.3</a>. It offers a comprehensive solution for businesses looking to optimize their processes and achieve their business goals more efficiently.
+Real estate hub that integrates website (CMS), CRM, financial and marketing functionalities, built atop the <a href="https://laravel.com/" target="_blank">Laravel framework</a> and <a href="https://tallstack.dev/" target="_blank">TALL Stack</a> using <a href="https://filamentphp.com/" target="_blank">Filament V.3</a>. It offers a comprehensive solution for real estate agencies looking to optimize their processes and achieve their business goals more efficiently.
 
 ## Requirements
 
@@ -18,9 +18,9 @@ InCloudCodile15 starter kit built atop the <a href="https://laravel.com/" target
 - Clone the repository and cd into it:
 
 ```bash
-git clone https://github.com/incloudsistemas/incloudcodile15_starter_kit.git
+git clone https://github.com/incloudsistemas/exhoestate.git
 
-cd incloudcodile15_starter_kit
+cd exhoestate
 ```
 
 - Install backend dependencies:
@@ -74,8 +74,4 @@ php artisan serve
 
 ## Security Vulnerabilities
 
-If you discover a security vulnerability within InCloudCodile15, please send an e-mail to Vinícius C. Lemos via [contato@incloudsistemas.com.br](mailto:contato@incloudsistemas.com.br). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The InCloudCodile15 is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+If you discover a security vulnerability within ExhoEstate, please send an e-mail to Vinícius C. Lemos via [contato@incloudsistemas.com.br](mailto:contato@incloudsistemas.com.br). All security vulnerabilities will be promptly addressed.

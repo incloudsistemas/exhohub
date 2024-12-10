@@ -20,9 +20,9 @@ class MediaService extends BaseService
         $data['model_type'] = MorphMapByClass(model: $ownerRecord::class);
         $data['model_id'] = $ownerRecord->id;
 
-        $data['collection_name'] = 'attachments';
-        $data['disk'] = 'public';
-        $data['conversions_disk'] = 'public';
+        $data['collection_name'] = $data['collection_name'] ?? 'attachments';
+        $data['disk'] = $data['disk'] ?? 'public';
+        $data['conversions_disk'] = $data['conversions_disk'] ?? 'public';
         $data['manipulations'] = $data['manipulations'] ?? [];
         $data['custom_properties'] = $data['custom_properties'] ?? [];
         $data['generated_conversions'] = $data['generated_conversions'] ?? [];

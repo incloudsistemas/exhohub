@@ -1,0 +1,158 @@
+/* ----------------------------------------------------------------
+	Custom CSS
+
+	Add all your Custom Styled CSS here for New Styles or
+	Overwriting Default Theme Styles for Better Handling Updates
+-----------------------------------------------------------------*/
+
+/*  COLORS
+    primary: 	#111111
+    secondary: 	#005247
+-----------------------------------------------------------------*/
+
+@import './global-custom.css';
+
+:root {
+    --cnvs-themecolor: #111111;
+    --cnvs-themecolor-rgb: 17, 17, 17;
+
+    --cnvs-secondarycolor: #005247;
+    --cnvs-secondarycolor-rgb: 0, 82, 71;
+}
+
+.bg-secondary,
+.h-bg-secondary:hover {
+    background-color: var(--cnvs-secondarycolor) !important;
+}
+
+.border-secondary {
+    border-color: var(--cnvs-secondarycolor) !important;
+}
+
+.secondary-color,
+.h-text-secondary:hover {
+    color: var(--cnvs-secondarycolor) !important;
+}
+
+.button-secondary {
+    background-color: var(--cnvs-secondarycolor) !important;
+}
+
+/* HEADER
+-----------------------------------------------------------------*/
+
+#side-panel .side-panel-wrap {
+    padding: 30px 50px 30px 20px;
+}
+
+#header {
+    --cnvs-primary-menu-font-weight: 400;
+    --cnvs-primary-menu-font-size: 0.95rem;
+    --cnvs-primary-menu-tt: none;
+
+    --cnvs-primary-menu-submenu-font-size: 0.85rem;
+    --cnvs-primary-menu-submenu-font-weight: 400;
+    --cnvs-primary-menu-submenu-hover-font-weight: 500;
+    --cnvs-primary-menu-submenu-tt: none;
+}
+
+#header.dark {
+    --cnvs-primary-menu-hover-color: #cccccc;
+}
+
+.is-expanded-menu .style-3 .menu-container>.menu-item>.menu-link {
+    border-radius: 5px;
+}
+
+.primary-menu-trigger,
+#page-menu-trigger {
+    background-color: var(--cnvs-secondarycolor);
+    padding: 11px;
+    border-radius: 5px;
+}
+
+.cnvs-hamburger .cnvs-hamburger-inner,
+.cnvs-hamburger .cnvs-hamburger-inner::before,
+.cnvs-hamburger .cnvs-hamburger-inner::after {
+    background-color: #fff;
+}
+
+#search-button {
+    padding: 6px 11px;
+}
+
+/* SLIDER
+-----------------------------------------------------------------*/
+#slider {
+    position: relative; /* Essencial para a base do posicionamento absoluto do search */
+}
+
+#slider-search {
+    position: absolute;
+    width: 100%;
+    margin-top: -270px;
+    z-index: 9;
+}
+
+/* POST CONTENT
+-----------------------------------------------------------------*/
+
+.breadcrumb {
+    position: relative;
+    margin: 0;
+    justify-content: left;
+    font-size: 90%;
+}
+
+.body-content dl,
+.body-content dt,
+.body-content dd,
+.body-content ol,
+.body-content ul,
+.body-content li {
+    margin-left: 5px;
+}
+
+.body-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* PROPERTIES
+-----------------------------------------------------------------*/
+
+.property-item .entry-title h2 {
+    font-size: 16px;
+}
+
+.property-item .entry-body {
+    height: 250px;
+    overflow: hidden;
+}
+
+.small-thumb-property-item .entry-body {
+    height: 100% !important;
+}
+
+.property-item .entry-categories {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+}
+
+.static-map {
+    position: relative;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* FORMS
+-----------------------------------------------------------------*/
+
+.form-check-label span {
+    text-decoration: underline dotted;
+    text-underline-offset: 0.375rem;
+}
+
+/* FOOTER
+-----------------------------------------------------------------*/

@@ -3,14 +3,14 @@
 namespace App\Models\Polymorphics;
 
 use App\Enums\ProfileInfos\UfEnum;
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Traits\ClearsResponseCache;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Address extends Model
 {
-    use HasFactory;
+    use HasFactory, ClearsResponseCache;
 
     /**
      * The attributes that are mass assignable.
@@ -44,15 +44,11 @@ class Address extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'is_main' => 'boolean',
-        'uf'      => UfEnum::class
+        'is_main'          => 'boolean',
+        'uf'               => UfEnum::class,
+        'gmap_coordinates' => 'array'
     ];
 
-    /**
-     * Get all of the owning addressable models.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
-     */
     public function addressable(): MorphTo
     {
         return $this->morphTo();
@@ -72,6 +68,11 @@ class Address extends Model
      * CUSTOMS.
      *
      */
+
+    public function getDisplayUfAttribute(): ?string
+    {
+        return $this->uf?->getLabel();
+    }
 
     public function getDisplayFullAddressAttribute(): ?string
     {
@@ -93,8 +94,15 @@ class Address extends Model
             $components[] = trim($this->district);
         }
 
-        $components[] = $this->city . '-' . $this->uf->name;
-        $components[] = $this->zipcode;
+        if (!empty(trim($this->city)) && (isset($this->uf) && !empty(trim($this->uf->name)))) {
+            $components[] = $this->city . '-' . $this->uf->name;
+        } else if (!empty(trim($this->city)) && !isset($this->uf)) {
+            $components[] = $this->city;
+        }
+
+        if (!empty(trim($this->zipcode))) {
+            $components[] = $this->zipcode;
+        }
 
         return implode(', ', $components);
     }
@@ -113,6 +121,53 @@ class Address extends Model
 
         if (!empty(trim($this->district))) {
             $components[] = trim($this->district);
+        }
+
+        return implode(', ', $components);
+    }
+
+    public function getDisplayDistrictCityUfAttribute(): ?string
+    {
+        $components = [];
+
+        if (!empty(trim($this->district))) {
+            $components[] = trim($this->district);
+        }
+
+        if (!empty(trim($this->city)) && (isset($this->uf) && !empty(trim($this->uf->name)))) {
+            $components[] = $this->city . '-' . $this->uf->name;
+        } else if (!empty(trim($this->city)) && !isset($this->uf)) {
+            $components[] = $this->city;
+        }
+
+        return implode(', ', $components);
+    }
+
+    public function getDisplayStreetCityUfAttribute(): ?string
+    {
+        $components = [];
+
+        if (!empty(trim($this->address_line))) {
+            $components[] = trim($this->address_line);
+        }
+
+        if (!empty(trim($this->city)) && (isset($this->uf) && !empty(trim($this->uf->name)))) {
+            $components[] = $this->city . '-' . $this->uf->name;
+        } else if (!empty(trim($this->city)) && !isset($this->uf)) {
+            $components[] = $this->city;
+        }
+
+        return implode(', ', $components);
+    }
+
+    public function getDisplayCityUfAttribute(): ?string
+    {
+        $components = [];
+
+        if (!empty(trim($this->city)) && (isset($this->uf) && !empty(trim($this->uf->name)))) {
+            $components[] = $this->city . '-' . $this->uf->name;
+        } else if (!empty(trim($this->city)) && !isset($this->uf)) {
+            $components[] = $this->city;
         }
 
         return implode(', ', $components);

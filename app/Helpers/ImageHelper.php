@@ -11,11 +11,20 @@ if (!function_exists('CreateThumb')) {
      * Create a thumb image
      * Types = fit, resize, background, resizeCanvas
      *
-     * @param
-     * @return
+     * @param string $src
+     * @param int $width
+     * @param int $height
+     * @param string $disk
+     * @param string $type
+     * @param bool $watermark
+     * @param string $watermarkPosition
+     * @param int $quality
+     * @return string
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     function CreateThumb(
-        string $src,
+        ?string $src,
         int $width,
         int $height,
         string $disk = 'public',
@@ -23,75 +32,85 @@ if (!function_exists('CreateThumb')) {
         bool $watermark = false,
         string $watermarkPosition = 'center',
         int $quality = 80
-    ): string {
-        // Creates a unique key for the cache based on src, width, height and type.
-        $cacheKey = 'thumb_' . md5($src . $width . $height . $type . $quality);
-        // Cache::forget($cacheKey);
+    ) {
+        // Validate mandatory parameters
+        if (!$src || empty($src)) {
+            return PlaceholderImg(width: $width, height: $height);
+        }
+
+        // Adjust source path
+        $src = ltrim($src, '/');
+
+        // Check if it's a complete URL and adjust accordingly
+        if (strpos($src, 'storage') !== false) {
+            $src = parse_url($src, PHP_URL_PATH);
+            $src = str_replace('/storage/', '', $src);
+        }
+
+        // Try to get the last modified date.
+        try {
+            $lastModified = Storage::disk($disk)->lastModified($src);
+        } catch (\Exception $e) {
+            // If it fails, you can set a default value or a fallback strategy.
+            $lastModified = now()->timestamp;
+        }
+
+        // Create a unique key for the cache based on src, width, height, type, quality and watermark.
+        $cacheKey = 'thumb_' . md5($src . $width . $height . $type . $quality . $watermark . $watermarkPosition) . "_$lastModified";
 
         // Try getting the thumbnail URL from cache first.
         return Cache::remember(
             $cacheKey,
             now()->addDay(),
             function () use ($src, $width, $height, $disk, $type, $watermark, $watermarkPosition, $quality) {
-                $src = ltrim($src, '/');
-
-                // For temporary $url
-                // if (strpos($src, '~inclou17/dominio.com.br') !== false) {
-                //     $src = str_replace('~inclou17/dominio.com.br', '', $src);
-                // }
-
-                // if (is_null($width) || is_null($height)) {
-                //     return $src;
-                // }
-
-                // Check if it is a complete URL
-                if (strpos($src, 'storage') !== false) {
-                    $src = parse_url($src, PHP_URL_PATH);
-                    $src = str_replace('/storage/', '', $src);
-                }
-
                 // Get paths and names
                 $filePartials = explode('/', $src);
                 $fileName = end($filePartials);
                 $dirPath = str_replace("/$fileName", '', $src);
                 $thumbSrc = "{$dirPath}/thumbs/{$width}x{$height}/{$fileName}";
 
-                // If original image doesn't exists returns a default image placeholder generated from https://placeholder.com/
+                // If original image doesn't exist, return a placeholder image
                 if (!Storage::disk($disk)->exists($src)) {
                     return PlaceholderImg(width: $width, height: $height);
                 }
 
-                // If thumbnail exist returns it
+                // If thumbnail exists, return it
                 if (Storage::disk($disk)->exists($thumbSrc)) {
-                    return url(Storage::url($thumbSrc));
+                    return asset(Storage::url($thumbSrc));
                 }
 
-                $file = Storage::disk($disk)
-                    ->get($src);
+                // Get the original file
+                $file = Storage::disk($disk)->get($src);
+                if ($file === false) {
+                    throw new \RuntimeException("Unable to read file: $src");
+                }
 
+                // Process the image
                 $manager = new ImageManager(new Driver());
                 $image = $manager->read($file);
 
                 if ($watermark) {
-                    $image->place(public_path('web-build/images/watermark.png'), $watermarkPosition);
+                    $image->place(public_path('build/web/images/watermark.png'), $watermarkPosition);
                 }
 
+                // Perform the desired image transformation
                 match ($type) {
                     'resize'       => $image->resizeDown($width, $height),
                     'scale'        => $image->scale($width, $height),
                     'fit'          => $image->cover($width, $height),
                     'pad'          => $image->pad($width, $height, '000'),
                     'resizeCanvas' => $image->resizeCanvas($width, $height, '000'),
-                    default        => throw new InvalidArgumentException("Invalid type: $type"),
+                    default        => throw new \UnexpectedValueException("Invalid type: $type"),
                 };
 
                 $encoded = $image->encode(new AutoEncoder(quality: $quality));
 
-                // Storage the file
-                Storage::disk($disk)
-                    ->put($thumbSrc, $encoded);
+                // Store the thumbnail file
+                if (!Storage::disk($disk)->put($thumbSrc, $encoded)) {
+                    throw new \RuntimeException("Failed to store thumbnail: $thumbSrc");
+                }
 
-                return url(Storage::url($thumbSrc));
+                return asset(Storage::url($thumbSrc));
             }
         );
     }

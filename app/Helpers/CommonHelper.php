@@ -124,7 +124,20 @@ if (!function_exists('ConvertEnToPtBrDateTime')) {
 }
 
 /**
- * Limita a string em relação aos caracteres.
+ * Format the string in terms of characters.
+ *
+ */
+if (!function_exists('FormatDateToGmtString')) {
+    function FormatDateToGmtString(string $date): string
+    {
+        $date = new \DateTime($date);
+
+        return $date->format('D M d Y H:i:s \G\M\TO (T)');
+    }
+}
+
+/**
+ * Limit the string in terms of characters.
  *
  */
 if (!function_exists('LimitCharsFromString')) {

@@ -20,7 +20,7 @@ class PermissionResource extends Resource
 {
     protected static ?string $model = Permission::class;
 
-    protected static ?string $slug = 'permissions';
+    // protected static ?string $slug = 'permissions';
 
     // protected static ?string $recordTitleAttribute = 'name';
 
@@ -47,12 +47,12 @@ class PermissionResource extends Resource
                     ->maxLength(255)
                     ->columnSpanFull(),
                 Forms\Components\Select::make('roles')
-                    ->label(__('Níveis de acessos'))
+                    ->label(__('Nível(is) de acesso(s)'))
                     ->multiple()
                     ->relationship(
                         name: 'roles',
                         titleAttribute: 'name',
-                        modifyQueryUsing: fn (PermissionService $service, Builder $query): Builder =>
+                        modifyQueryUsing: fn(PermissionService $service, Builder $query): Builder =>
                         $service->getQueryAvoidingRoles(query: $query)
                     )
                     ->preload()
@@ -70,7 +70,7 @@ class PermissionResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('roles.name')
-                    ->label(__('Níveis de acessos'))
+                    ->label(__('Nível(is) de acesso(s)'))
                     ->badge()
                     ->searchable()
                     ->sortable()
@@ -91,11 +91,11 @@ class PermissionResource extends Resource
             ->defaultSort(column: 'created_at', direction: 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('roles')
-                    ->label(__('Níveis de acessos'))
+                    ->label(__('Nível(is) de acesso(s)'))
                     ->relationship(
                         name: 'roles',
                         titleAttribute: 'name',
-                        modifyQueryUsing: fn (PermissionService $service, Builder $query): Builder =>
+                        modifyQueryUsing: fn(PermissionService $service, Builder $query): Builder =>
                         $service->getQueryAvoidingRoles(query: $query)
                     )
                     ->multiple()
@@ -105,6 +105,7 @@ class PermissionResource extends Resource
                     ->form([
                         Forms\Components\Grid::make([
                             'default' => 1,
+                            'md'      => 2,
                         ])
                             ->schema([
                                 Forms\Components\DatePicker::make('created_from')
@@ -130,7 +131,7 @@ class PermissionResource extends Resource
                             ]),
                     ])
                     ->query(
-                        fn (PermissionService $service, Builder $query, array $data): Builder =>
+                        fn(PermissionService $service, Builder $query, array $data): Builder =>
                         $service->tableFilterByCreatedAt(query: $query, data: $data)
                     ),
                 Tables\Filters\Filter::make('updated_at')
@@ -138,6 +139,7 @@ class PermissionResource extends Resource
                     ->form([
                         Forms\Components\Grid::make([
                             'default' => 1,
+                            'md'      => 2,
                         ])
                             ->schema([
                                 Forms\Components\DatePicker::make('updated_from')
@@ -163,10 +165,11 @@ class PermissionResource extends Resource
                             ]),
                     ])
                     ->query(
-                        fn (PermissionService $service, Builder $query, array $data): Builder =>
+                        fn(PermissionService $service, Builder $query, array $data): Builder =>
                         $service->tableFilterByUpdatedAt(query: $query, data: $data)
                     ),
-            ])
+            ], layout: Tables\Enums\FiltersLayout::AboveContentCollapsible)
+            ->filtersFormColumns(2)
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ActionGroup::make([
@@ -194,9 +197,9 @@ class PermissionResource extends Resource
                 Infolists\Components\TextEntry::make('name')
                     ->label(__('Nome')),
                 Infolists\Components\TextEntry::make('roles.name')
-                    ->label(__('Níveis de acessos'))
+                    ->label(__('Nível(is) de acesso(s)'))
                     ->badge()
-                    ->columnSpanFull(),
+                    ->columnSpan(2),
                 Infolists\Components\TextEntry::make('created_at')
                     ->label(__('Cadastro'))
                     ->dateTime('d/m/Y H:i'),

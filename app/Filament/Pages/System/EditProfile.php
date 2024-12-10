@@ -10,6 +10,8 @@ class EditProfile extends BaseEditProfile
 {
     protected static ?string $slug = 'my-profile';
 
+    protected ?bool $hasDatabaseTransactions = true;
+
     public function form(Form $form): Form
     {
         return $form

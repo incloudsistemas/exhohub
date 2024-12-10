@@ -47,7 +47,7 @@ return new class extends Migration
             // Ponto de referência
             $table->string('reference')->nullable();
             // Coordenadas
-            $table->string('gmap_coordinates')->nullable();
+            $table->json('gmap_coordinates')->nullable();
             $table->timestamps();
         });
     }

@@ -70,6 +70,7 @@ class AddressesRelationManager extends RelationManager
                 Forms\Components\Select::make('uf')
                     ->label(__('Estado'))
                     ->options(UfEnum::class)
+                    ->selectablePlaceholder(false)
                     ->searchable()
                     ->required()
                     ->native(false),

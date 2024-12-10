@@ -137,4 +137,6 @@ return [
     'g_recapcha_server'       => env('G_RECAPCHA_SERVER', ''),
     'g_tag'                   => env('G_TAG', ''),
     'g_analytics_property_id' => env('G_ANALYTICS_PROPERTY_ID', ''),
+
+    'olx_secret_key' => env('OLX_SECRET_KEY', ''),
 ];

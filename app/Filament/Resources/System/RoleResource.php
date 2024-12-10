@@ -20,7 +20,7 @@ class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
 
-    protected static ?string $slug = 'roles';
+    // protected static ?string $slug = 'roles';
 
     // protected static ?string $recordTitleAttribute = 'name';
 
@@ -58,11 +58,11 @@ class RoleResource extends Resource
                     ->description(__('Gerencie as permissões de acesso ao sistema.'))
                     ->schema([
                         Forms\Components\CheckboxList::make('permissions')
-                            ->label('')
+                            ->hiddenLabel()
                             ->relationship(
                                 name: 'permissions',
                                 titleAttribute: 'name',
-                                modifyQueryUsing: fn (Builder $query): Builder =>
+                                modifyQueryUsing: fn(Builder $query): Builder =>
                                 $query->orderBy('id', 'asc')
                             )
                             ->searchable()
@@ -129,7 +129,7 @@ class RoleResource extends Resource
                             ]),
                     ])
                     ->query(
-                        fn (RoleService $service, Builder $query, array $data): Builder =>
+                        fn(RoleService $service, Builder $query, array $data): Builder =>
                         $service->tableFilterByCreatedAt(query: $query, data: $data)
                     ),
                 Tables\Filters\Filter::make('updated_at')
@@ -162,7 +162,7 @@ class RoleResource extends Resource
                             ]),
                     ])
                     ->query(
-                        fn (RoleService $service, Builder $query, array $data): Builder =>
+                        fn(RoleService $service, Builder $query, array $data): Builder =>
                         $service->tableFilterByUpdatedAt(query: $query, data: $data)
                     ),
             ])
@@ -175,11 +175,11 @@ class RoleResource extends Resource
                                     ->label(__('Editar'))
                                     ->button()
                                     ->url(
-                                        fn (Role $record): string =>
+                                        fn(Role $record): string =>
                                         self::getUrl('edit', ['record' => $record]),
                                     )
                                     ->disabled(
-                                        fn (): bool =>
+                                        fn(): bool =>
                                         !auth()->user()->can('Editar Níveis de Acessos')
                                     ),
                             ]),
@@ -188,7 +188,7 @@ class RoleResource extends Resource
                         ->dropdown(false),
                     Tables\Actions\DeleteAction::make()
                         ->before(
-                            fn (RoleService $service, Tables\Actions\DeleteAction $action, Role $record) =>
+                            fn(RoleService $service, Tables\Actions\DeleteAction $action, Role $record) =>
                             $service->preventRoleDeleteIf(action: $action, role: $record)
                         ),
                 ]),
@@ -200,24 +200,46 @@ class RoleResource extends Resource
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
-            ]);
+            ])
+            ->recordAction(Tables\Actions\ViewAction::class)
+            ->recordUrl(null);
     }
 
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
             ->schema([
-                Infolists\Components\TextEntry::make('name')
-                    ->label(__('Nome')),
-                Infolists\Components\Grid::make(['default' => 3])
-                    ->schema([
-                        Infolists\Components\TextEntry::make('created_at')
-                            ->label(__('Cadastro'))
-                            ->dateTime('d/m/Y H:i'),
-                        Infolists\Components\TextEntry::make('updated_at')
-                            ->label(__('Últ. atualização'))
-                            ->dateTime('d/m/Y H:i'),
-                    ]),
+                Infolists\Components\Tabs::make('Label')
+                    ->tabs([
+                        Infolists\Components\Tabs\Tab::make(__('Dados Gerais'))
+                            ->schema([
+                                Infolists\Components\TextEntry::make('name')
+                                    ->label(__('Nome')),
+                                Infolists\Components\Grid::make(['default' => 3])
+                                    ->schema([
+                                        Infolists\Components\TextEntry::make('created_at')
+                                            ->label(__('Cadastro'))
+                                            ->dateTime('d/m/Y H:i'),
+                                        Infolists\Components\TextEntry::make('updated_at')
+                                            ->label(__('Últ. atualização'))
+                                            ->dateTime('d/m/Y H:i'),
+                                    ]),
+                            ]),
+                        Infolists\Components\Tabs\Tab::make(__('Lista de Permissões'))
+                            ->schema([
+                                Infolists\Components\TextEntry::make('permissions.name')
+                                    ->label(__('Permissão(ões)'))
+                                    ->hiddenLabel()
+                                    ->badge()
+                                    ->visible(
+                                        fn (array|string|null $state): bool =>
+                                        !empty($state),
+                                    )
+                                    ->columnSpanFull(),
+                            ]),
+                    ])
+                    ->columns(3)
+                    ->columnSpanFull(),
             ])
             ->columns(3);
     }

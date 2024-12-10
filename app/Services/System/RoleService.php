@@ -43,7 +43,8 @@ class RoleService extends BaseService
         $user = auth()->user();
         $rolesToAvoid = static::getArrayOfRolesToAvoidByAuthUserRoles(user: $user);
 
-        return $query->whereNotIn('id', $rolesToAvoid);
+        return $query->whereNotIn('id', $rolesToAvoid)
+            ->orderBy('id', 'asc');
     }
 
     /**

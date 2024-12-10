@@ -43,7 +43,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->command->info('Creating Role ' . strtoupper($key));
 
             // Delay of 1 seconds
-            sleep(1);
+            // sleep(1);
 
             // Reading role permission modules
             foreach ($modules as $module => $value) {
@@ -60,7 +60,7 @@ class RolesAndPermissionsSeeder extends Seeder
                     $role->givePermissionTo($permission);
 
                     // Delay of 1 seconds
-                    sleep(1);
+                    // sleep(1);
                 }
             }
 

@@ -168,8 +168,7 @@ class MediaRelationManager extends RelationManager
                     ->hidden(
                         fn (Media $record): bool =>
                         !in_array(
-                            Storage::disk('public')
-                                ->mimeType($record->file_name),
+                            Storage::disk('public')->mimeType($record->file_name),
                             ['image/jpeg', 'image/gif', 'image/png', 'image/bmp', 'image/svg+xml']
                         )
                     ),

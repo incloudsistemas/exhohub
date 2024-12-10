@@ -21,6 +21,66 @@ return [
         'Administrador' => [
             'Níveis de Acessos' => 'c,r,u,d',
             'Usuários'          => 'c,r,u,d',
+            'Agências'          => 'c,r,u,d',
+            'Times'             => 'c,r,u,d',
+
+            '[CRM] Tipos de Contatos'             => 'c,r,u,d',
+            '[CRM] Origens dos Contatos/Negócios' => 'c,r,u,d',
+            '[CRM] Contatos'                      => 'c,r,u,d',
+            '[CRM] Funis de Negócios'             => 'c,r,u,d',
+            '[CRM] Negócios'                      => 'c,r,u,d',
+            '[CRM] Filas'                         => 'c,r,u,d',
+
+            '[IMB] Tipos de Imóveis'             => 'c,r,u,d',
+            '[IMB] Subtipos de Imóveis'          => 'c,r,u,d',
+            '[IMB] Características dos Imóveis'  => 'c,r,u,d',
+            '[IMB] Imóveis à Venda e/ou Aluguel' => 'c,r,u,d',
+            '[IMB] Lançamentos'                  => 'c,r,u,d',
+
+            '[CMS] Páginas'     => 'c,r,u,d',
+            '[CMS] Blog'        => 'c,r,u,d',
+            '[CMS] Depoimentos' => 'c,r,u,d',
+            '[CMS] Parceiros'   => 'c,r,u,d',
+            '[CMS] Categorias'  => 'c,r,u,d',
+            '[CMS] Sliders'     => 'c,r,u,d',
+
+            '[Suporte] Chamados'      => 'c,r,u,d',
+            '[Suporte] Departamentos' => 'c,r,u,d',
+            '[Suporte] Categorias'    => 'c,r,u,d',
+        ],
+        'Diretor' => [
+            '[CRM] Contatos' => 'c,r,u,d',
+            '[CRM] Negócios' => 'c,r,u,d',
+
+            '[IMB] Imóveis à Venda e/ou Aluguel' => 'c,r,u,d',
+
+            '[Suporte] Chamados' => 'c,r,u,d',
+        ],
+        'Gerente' => [
+            '[CRM] Contatos' => 'c,r,u',
+            '[CRM] Negócios' => 'c,r,u',
+
+            '[IMB] Imóveis à Venda e/ou Aluguel' => 'c,r,u',
+
+            '[Suporte] Chamados' => 'c,r,u,d',
+        ],
+        'Corretor' => [
+            '[CRM] Contatos' => 'c,r,u',
+            '[CRM] Negócios' => 'c,r,u',
+
+            '[IMB] Imóveis à Venda e/ou Aluguel' => 'c,r,u',
+
+            '[Suporte] Chamados' => 'c,r,u,d',
+        ],
+        'Captador' => [
+            '[IMB] Imóveis à Venda e/ou Aluguel' => 'c,r,u',
+
+            '[Suporte] Chamados' => 'c,r,u,d',
+        ],
+        'Suporte' => [
+            '[Suporte] Chamados'      => 'c,r,u,d',
+            // '[Suporte] Departamentos' => 'c,r,u,d',
+            // '[Suporte] Categorias'    => 'c,r,u,d',
         ],
     ],
 

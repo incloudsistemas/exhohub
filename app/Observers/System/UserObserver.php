@@ -26,7 +26,6 @@ class UserObserver
     {
         $user->email = $user->email . '//deleted_' . md5(uniqid());
         $user->cpf = !empty($user->cpf) ? $user->cpf . '//deleted_' . md5(uniqid()) : null;
-
         $user->save();
     }
 
