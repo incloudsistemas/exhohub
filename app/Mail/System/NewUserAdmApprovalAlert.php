@@ -35,6 +35,6 @@ class NewUserAdmApprovalAlert extends Mailable
         return $this->subject("[$appName] $subject")
             ->from($fromEmail, $fromName)
             // ->replyTo($this->data['email'], $this->data['name'])
-            ->markdown('filament.emails.new-user-adm-approval-alert');
+            ->markdown('filament.emails.system.new-user-adm-approval-alert');
     }
 }

@@ -36,9 +36,9 @@ class Ticket extends Model implements HasMedia
         'body',
         'priority',
         'order',
-        'opened_at',
-        'finished_at',
         'status',
+        'opened_at',
+        'closed_at',
     ];
 
     /**
@@ -49,10 +49,10 @@ class Ticket extends Model implements HasMedia
     protected function casts(): array
     {
         return [
-            'priority'    => TicketPriorityEnum::class,
-            'opened_at'   => DateTimeCast::class,
-            'finished_at' => DateTimeCast::class,
-            'status'      => TicketStatusEnum::class,
+            'priority'  => TicketPriorityEnum::class,
+            'status'    => TicketStatusEnum::class,
+            'opened_at' => DateTimeCast::class,
+            'closed_at' => DateTimeCast::class,
         ];
     }
 
@@ -121,12 +121,12 @@ class Ticket extends Model implements HasMedia
         );
     }
 
-    public function registerMediaConversions(Media $media = null): void
-    {
-        $this->addMediaConversion('thumb')
-            ->fit(Fit::Crop, 150, 150)
-            ->nonQueued();
-    }
+    // public function registerMediaConversions(Media $media = null): void
+    // {
+    //     $this->addMediaConversion('thumb')
+    //         ->fit(Fit::Crop, 150, 150)
+    //         ->nonQueued();
+    // }
 
     /**
      * EVENT LISTENERS.

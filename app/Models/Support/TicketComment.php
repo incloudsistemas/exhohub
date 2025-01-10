@@ -73,4 +73,22 @@ class TicketComment extends Model implements HasMedia
      * CUSTOMS.
      *
      */
+
+    public function getDisplayAttachmentsAttribute(): ?array
+    {
+        $attachments = $this->getMedia('attachments');
+
+        $data['attachments'] = [];
+        foreach ($attachments as $key => $attachment) {
+            $data['attachments'][] = [
+                'name'      => $attachment->name,
+                'file_name' => $attachment->file_name,
+                'mime'      => $attachment->mime_type,
+                'size'      => AbbrNumberFormat($attachment->size),
+                'download'  => url('storage/' . $attachment->id . '/' . $attachment->file_name)
+            ];
+        }
+
+        return $data['attachments'];
+    }
 }

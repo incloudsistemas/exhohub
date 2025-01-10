@@ -45,11 +45,11 @@ class AddressService extends BaseService
         try {
             $response = $client->request('GET', "https://viacep.com.br/ws/{$zipcode}/json/");
 
-            if ($response->getStatusCode() == 200) {
+            if ($response->getStatusCode() === 200) {
                 $address = json_decode($response->getBody()->getContents(), true);
 
                 // Check if the API returned any errors (e.g.: CEP not found)
-                if (isset($address['erro']) && $address['erro'] === true) {
+                if (isset($address['erro']) && $address['erro'] === 'true') {
                     return ['error' => __('CEP não encontrado. Por favor, verifique o CEP informado.')];
                 }
 

@@ -47,6 +47,12 @@ return [
             '[Suporte] Chamados'      => 'c,r,u,d',
             '[Suporte] Departamentos' => 'c,r,u,d',
             '[Suporte] Categorias'    => 'c,r,u,d',
+
+            '[Financeiro] Contas Bancárias' => 'c,r,u,d',
+            '[Financeiro] Contas a Pagar'   => 'c,r,u,d',
+            '[Financeiro] Contas a Receber' => 'c,r,u,d',
+            '[Financeiro] Transferências'   => 'c,r,u,d',
+            '[Financeiro] Categorias'       => 'c,r,u,d',
         ],
         'Diretor' => [
             '[CRM] Contatos' => 'c,r,u,d',

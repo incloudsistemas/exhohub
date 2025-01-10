@@ -13,6 +13,7 @@ use App\Services\Support\DepartmentService;
 use App\Services\Support\TicketCategoryService;
 use App\Services\Support\TicketService;
 use App\Services\System\UserService;
+use Closure;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Forms;
@@ -22,8 +23,10 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class TicketResource extends Resource
 {
@@ -43,13 +46,23 @@ class TicketResource extends Resource
     {
         return $form
             ->schema([
-                static::getGeneralInfosFormSection(),
-                static::getCommentsFormSection()
+                Forms\Components\Group::make()
+                    ->schema([
+                        static::getGeneralInfosFormSection(),
+                    ])
+                    ->visibleOn('create')
+                    ->columnSpanFull(),
+                Forms\Components\Tabs::make('Tabs')
+                    ->tabs([
+                        Forms\Components\Tabs\Tab::make(__('Quadro de Respostas/Comentários'))
+                            ->schema(
+                                static::getCommentsFormSection()
+                            ),
+                    ])
                     ->visibleOn('edit')
-                    ->hidden(
-                        fn(array $state): bool =>
-                        (int) $state['status'] !== 1 // 1 - Aberto
-                    ),
+                    ->columns(2)
+                    ->columnSpanFull(),
+
             ]);
     }
 
@@ -59,7 +72,7 @@ class TicketResource extends Resource
             ->description(__('Visão geral e informações fundamentais sobre o chamado.'))
             ->schema([
                 Forms\Components\Select::make('department_id')
-                    ->label(__('Departamento(s)'))
+                    ->label(__('Departamento'))
                     ->relationship(
                         name: 'departments',
                         titleAttribute: 'name',
@@ -92,7 +105,7 @@ class TicketResource extends Resource
                     // ->selectablePlaceholder(false)
                     ->searchable()
                     ->preload()
-                    ->required()
+                    // ->required()
                     ->native(false)
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('title')
@@ -123,9 +136,9 @@ class TicketResource extends Resource
                     ->fileAttachmentsVisibility('public')
                     ->required()
                     ->columnSpanFull(),
-                Forms\Components\SpatieMediaLibraryFileUpload::make('attachments')
+                Forms\Components\SpatieMediaLibraryFileUpload::make('attachments[]')
                     ->label(__('Anexo(s)'))
-                    ->helperText(__('3 arqs. // Máx. 5 mb.'))
+                    ->helperText(__('Máx. 3 arqs. // 5 mb.'))
                     ->collection('attachments')
                     ->getUploadedFileNameForStorageUsing(
                         fn(TemporaryUploadedFile $file, callable $get): string =>
@@ -136,13 +149,12 @@ class TicketResource extends Resource
                     ->maxSize(5120)
                     ->maxFiles(3)
                     ->downloadable()
-                    // ->panelLayout('grid')
                     ->columnSpanFull(),
                 Forms\Components\Select::make('applicant_users')
                     ->label(__('Solicitante(s) adicional(is)'))
                     ->helperText(__('Adicione usuários que você deseja que acompanhem este chamado. Eles poderão comentar e receber atualizações deste chamado.'))
                     ->relationship(
-                        name: 'users',
+                        name: 'applicantUsers',
                         titleAttribute: 'name',
                     )
                     ->getSearchResultsUsing(
@@ -157,128 +169,281 @@ class TicketResource extends Resource
                     ->searchable()
                     ->preload()
                     ->columnSpanFull(),
-                Forms\Components\Select::make('priority')
-                    ->label(__('Prioridade'))
-                    ->options(TicketPriorityEnum::class)
-                    ->native(false)
-                    ->visible(
-                        fn(string $operation): bool =>
-                        $operation === 'edit' &&
-                        auth()->user()->hasAnyRole(['Superadministrador', 'Administrador', 'Suporte'])
-                    ),
-                Forms\Components\Select::make('status')
-                    ->label(__('Status'))
-                    ->options(TicketStatusEnum::class)
-                    ->selectablePlaceholder(false)
-                    ->required()
-                    ->native(false)
-                    ->live()
-                    ->visible(
-                        fn(string $operation): bool =>
-                        $operation === 'edit' &&
-                        auth()->user()->hasAnyRole(['Superadministrador', 'Administrador', 'Suporte'])
-                    ),
             ])
             ->columns(2)
             ->collapsible();
     }
 
-    protected static function getCommentsFormSection(): Forms\Components\Section
+    protected static function getCommentsFormSection(): array
     {
-        return Forms\Components\Section::make(__('Quadro de Respostas/Comentários'))
-            ->description(__('Visualizar e adicionar respostas relacionados a este chamado. Use este espaço para documentar informações importantes e acompanhar o progresso da resolução.'))
-            ->schema([
-                Forms\Components\Repeater::make('comments')
-                    ->hiddenLabel()
-                    ->relationship()
-                    ->schema([
-                        Forms\Components\RichEditor::make('body')
-                            ->label(__('Comentário'))
-                            ->toolbarButtons([
-                                'attachFiles',
-                                'blockquote',
-                                'bold',
-                                'bulletList',
-                                'codeBlock',
-                                'h2',
-                                'h3',
-                                'italic',
-                                'link',
-                                'orderedList',
-                                'redo',
-                                'strike',
-                                'undo',
-                            ])
-                            ->fileAttachmentsDisk('public')
-                            ->fileAttachmentsDirectory('pages')
-                            ->fileAttachmentsVisibility('public')
-                            ->required()
-                            ->disabled(
-                                fn(?TicketComment $record): int =>
-                                isset($record) && $record->user_id !== auth()->user()->id
-                            )
-                            ->columnSpanFull(),
-                        Forms\Components\SpatieMediaLibraryFileUpload::make('attachments')
-                            ->label(__('Anexo(s)'))
-                            ->helperText(__('3 arqs. // Máx. 5 mb.'))
-                            ->collection('attachments')
-                            ->getUploadedFileNameForStorageUsing(
-                                fn(TemporaryUploadedFile $file, callable $get): string =>
-                                (string) str('-' . md5(uniqid()) . '-' . time() . '.' . $file->extension())
-                                    ->prepend(Str::slug($get('../../title'))),
-                            )
-                            ->multiple()
-                            ->maxSize(5120)
-                            ->maxFiles(3)
-                            ->downloadable()
-                            // ->panelLayout('grid')
-                            ->disabled(
-                                fn(?TicketComment $record): int =>
-                                isset($record) && $record->user_id !== auth()->user()->id
-                            )
-                            ->columnSpanFull(),
-                        Forms\Components\Select::make('user_id')
-                            ->label(__('Usuário'))
-                            ->relationship(
-                                name: 'owner',
-                                titleAttribute: 'name',
-                            )
-                            ->default(
-                                fn(): int =>
-                                auth()->user()->id,
-                            )
-                            ->required()
-                            ->disabled()
-                            ->dehydrated(),
-                        Forms\Components\DateTimePicker::make('created_at')
-                            ->label(__('Dt. comentário'))
-                            ->displayFormat('d/m/Y H:i')
-                            ->seconds(false)
-                            ->default(now())
-                            ->disabled(),
-                    ])
-                    ->itemLabel(
-                        fn(array $state): ?string =>
-                        User::find($state['user_id'])?->name ?? null
-                    )
-                    ->addActionLabel(__('Adicionar comentário'))
-                    ->defaultItems(1)
-                    ->reorderable(false)
-                    ->collapsible()
-                    ->collapseAllAction(
-                        fn(Forms\Components\Actions\Action $action) =>
-                        $action->label(__('Minimizar todos'))
-                    )
-                    ->deleteAction(
-                        fn(Forms\Components\Actions\Action $action) =>
-                        $action->requiresConfirmation()
-                    )
-                    ->minItems(1)
-                    ->columnSpanFull()
-                    ->columns(2),
-            ])
-            ->columns(2)
-            ->collapsible();
+        return [
+            Forms\Components\Section::make('')
+                // ->description(__('...'))
+                ->schema([
+                    Forms\Components\Placeholder::make('ticket.title')
+                        ->label(__('Título do chamado'))
+                        ->hiddenLabel()
+                        ->content(
+                            fn(Ticket $record): HtmlString =>
+                            new HtmlString("<strong>#{$record->id} - {$record->title}</strong>"),
+                        )
+                        ->columnSpanFull(),
+                    Forms\Components\Placeholder::make('ticket.body')
+                        ->label(__('Descrição do problema'))
+                        ->hiddenLabel()
+                        ->content(
+                            fn(Ticket $record): HtmlString =>
+                            new HtmlString($record->body),
+                        )
+                        ->columnSpanFull(),
+                    Forms\Components\Repeater::make('ticket_attachments')
+                        ->label(__('Anexo(s)'))
+                        ->schema([
+                            Forms\Components\Placeholder::make('file_name')
+                                ->label(__('Arquivo'))
+                                ->hiddenLabel()
+                                ->content(
+                                    fn(?string $state): ?string =>
+                                    $state,
+                                ),
+                            Forms\Components\Placeholder::make('download')
+                                ->label(__('Download'))
+                                ->hiddenLabel()
+                                // ->content('')
+                                ->hint(
+                                    fn(?string $state): HtmlString =>
+                                    new HtmlString('<a href="' . $state . '" target="_blank">Download</a>')
+                                )
+                                ->hintIcon('heroicon-s-arrow-down-tray')
+                                ->hintColor('primary'),
+                        ])
+                        ->addable(false)
+                        ->reorderable(false)
+                        ->collapsible(false)
+                        ->collapseAllAction(
+                            fn(Forms\Components\Actions\Action $action) =>
+                            $action->label(__('Minimizar todos'))
+                        )
+                        ->deletable(false)
+                        ->deleteAction(
+                            fn(Forms\Components\Actions\Action $action) =>
+                            $action->requiresConfirmation()
+                        )
+                        ->hidden(
+                            fn(array $state): bool =>
+                            empty($state)
+                        )
+                        ->grid(2)
+                        ->columns(2)
+                        ->columnSpanFull(),
+                    Forms\Components\Placeholder::make('ticket.user')
+                        ->label(__('Autor'))
+                        ->content(
+                            fn(Ticket $record): string =>
+                            $record->owner->name,
+                        ),
+                    Forms\Components\Placeholder::make('ticket.created_at')
+                        ->label(__('Dt. chamado'))
+                        ->content(
+                            fn(Ticket $record): string =>
+                            $record->created_at->format('d/m/Y H:i'),
+                        ),
+                ])
+                ->columns(2),
+            Forms\Components\Select::make('priority')
+                ->label(__('Prioridade'))
+                ->options(TicketPriorityEnum::class)
+                ->native(false)
+                ->visible(
+                    fn(string $operation): bool =>
+                    $operation === 'edit' &&
+                        auth()->user()->hasAnyRole(['Superadministrador', 'Administrador', 'Suporte'])
+                ),
+            Forms\Components\Select::make('status')
+                ->label(__('Status'))
+                ->options(TicketStatusEnum::class)
+                ->selectablePlaceholder(false)
+                ->required()
+                ->native(false)
+                ->live()
+                ->visible(
+                    fn(string $operation, ?string $state): bool =>
+                    $operation === 'edit' &&
+                        auth()->user()->hasAnyRole(['Superadministrador', 'Administrador', 'Suporte']) &&
+                        (isset($state) && (int) $state !== 0)
+                ),
+            Forms\Components\Repeater::make('comments')
+                ->hiddenLabel()
+                ->relationship()
+                ->schema([
+                    Forms\Components\Placeholder::make('display_user')
+                        ->label(__('Autor'))
+                        ->content(
+                            fn(?TicketComment $record): ?string =>
+                            $record->owner?->name,
+                        )
+                        ->disabled()
+                        ->visible(
+                            fn(?TicketComment $record): int =>
+                            isset($record)
+                        ),
+                    Forms\Components\Placeholder::make('display_created_at')
+                        ->label(__('Data'))
+                        ->content(
+                            fn(?TicketComment $record): ?string =>
+                            isset($record) ? $record->created_at->format('d/m/Y H:i') : null,
+                        )
+                        ->disabled()
+                        ->visible(
+                            fn(?TicketComment $record): int =>
+                            isset($record)
+                        ),
+                    Forms\Components\RichEditor::make('body')
+                        ->label(__('Comentário'))
+                        ->hiddenLabel()
+                        ->toolbarButtons([
+                            'attachFiles',
+                            'blockquote',
+                            'bold',
+                            'bulletList',
+                            'codeBlock',
+                            'h2',
+                            'h3',
+                            'italic',
+                            'link',
+                            'orderedList',
+                            'redo',
+                            'strike',
+                            'undo',
+                        ])
+                        ->fileAttachmentsDisk('public')
+                        ->fileAttachmentsDirectory('pages')
+                        ->fileAttachmentsVisibility('public')
+                        ->required()
+                        ->visible(
+                            fn(?TicketComment $record): int =>
+                            !isset($record)
+                        )
+                        ->columnSpanFull(),
+                    Forms\Components\Placeholder::make('display_body')
+                        ->hiddenLabel()
+                        ->content(
+                            fn(?TicketComment $record): ?HtmlString =>
+                            isset($record) ? new HtmlString($record->body) : null,
+                        )
+                        ->disabled()
+                        ->columnSpanFull(),
+                    Forms\Components\SpatieMediaLibraryFileUpload::make('attachments[]')
+                        ->label(__('Anexo(s)'))
+                        ->helperText(__('Máx. 3 arqs. // 5 mb.'))
+                        ->collection('attachments')
+                        ->getUploadedFileNameForStorageUsing(
+                            fn(TemporaryUploadedFile $file, callable $get): string =>
+                            (string) str('-' . md5(uniqid()) . '-' . time() . '.' . $file->extension())
+                                ->prepend(Str::slug($get('../../title'))),
+                        )
+                        ->multiple()
+                        ->maxSize(5120)
+                        ->maxFiles(3)
+                        ->downloadable()
+                        // ->panelLayout('grid')
+                        ->visible(
+                            fn(?TicketComment $record): int =>
+                            !isset($record)
+                        )
+                        ->columnSpanFull(),
+                    Forms\Components\Repeater::make('display_attachments')
+                        ->label(__('Anexo(s)'))
+                        ->schema([
+                            Forms\Components\Placeholder::make('file_name')
+                                ->label(__('Arquivo'))
+                                ->hiddenLabel()
+                                ->content(
+                                    fn(?string $state): ?string =>
+                                    $state,
+                                ),
+                            Forms\Components\Placeholder::make('download')
+                                ->label(__('Download'))
+                                ->hiddenLabel()
+                                // ->content('')
+                                ->hint(
+                                    fn(?string $state): HtmlString =>
+                                    new HtmlString('<a href="' . $state . '" target="_blank">Download</a>')
+                                )
+                                ->hintIcon('heroicon-s-arrow-down-tray')
+                                ->hintColor('primary'),
+                        ])
+                        ->addable(false)
+                        ->reorderable(false)
+                        ->collapsible(false)
+                        ->collapseAllAction(
+                            fn(Forms\Components\Actions\Action $action) =>
+                            $action->label(__('Minimizar todos'))
+                        )
+                        ->deletable(false)
+                        ->deleteAction(
+                            fn(Forms\Components\Actions\Action $action) =>
+                            $action->requiresConfirmation()
+                        )
+                        ->visible(
+                            fn(?TicketComment $record): int =>
+                            isset($record)
+                        )
+                        ->hidden(
+                            fn(array $state): bool =>
+                            empty($state)
+                        )
+                        ->grid(2)
+                        ->columns(2)
+                        ->columnSpanFull(),
+                    Forms\Components\Hidden::make('user_id')
+                        ->label(__('Usuário'))
+                        ->default(
+                            fn(): int =>
+                            auth()->user()->id,
+                        )
+                        ->required()
+                        ->visible(
+                            fn(?TicketComment $record): int =>
+                            !isset($record)
+                        ),
+                ])
+                // ->itemLabel(
+                //     fn(array $state): ?string =>
+                //     User::find($state['user_id'])?->name ?? null
+                // )
+                ->addActionLabel(__('Adicionar comentário'))
+                ->defaultItems(1)
+                ->reorderable(false)
+                // ->collapsible()
+                ->collapseAllAction(
+                    fn(Forms\Components\Actions\Action $action) =>
+                    $action->label(__('Minimizar todos'))
+                )
+                ->deletable(false)
+                ->deleteAction(
+                    fn(Forms\Components\Actions\Action $action) =>
+                    $action->requiresConfirmation()
+                )
+                ->disabled(
+                    function (Ticket $record): bool {
+                        // 0 - Aguardando atendimento
+                        if ((int) $record->status->value === 0 && !auth()->user()->hasAnyRole(['Superadministrador', 'Administrador', 'Suporte'])) {
+                            return true;
+                        }
+
+                        // 2 - Finalizado
+                        if ((int) $record->status->value === 2) {
+                            return true;
+                        }
+
+                        return false;
+                    }
+                )
+                ->minItems(1)
+                ->columns(2)
+                ->columnSpanFull(),
+        ];
     }
 
     public static function table(Table $table): Table

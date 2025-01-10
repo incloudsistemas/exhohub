@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail\System;
+namespace App\Mail\Support;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NewUserCreatedAlert extends Mailable
+class TicketClosedAlert extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -27,14 +27,14 @@ class NewUserCreatedAlert extends Mailable
     public function build(): self
     {
         $appName = config('app.name', env('APP_NAME', 'InCloud'));
-        $subject = 'Conta criada com sucesso!';
+        $subject = 'Chamado #' . $this->data['id'] . ' encerrado';
 
         $fromEmail = config('mail.from.address', env('MAIL_FROM_ADDRESS', 'nao-responda@incloudsistemas.com.br'));
         $fromName = config('mail.from.name', env('MAIL_FROM_NAME', $appName));
 
-        return $this->subject("[$appName] $subject")
+        return $this->subject("[$appName][Suporte] $subject")
             ->from($fromEmail, $fromName)
             // ->replyTo($this->data['email'], $this->data['name'])
-            ->markdown('filament.emails.support.new-ticket-alert');
+            ->markdown('filament.emails.support.ticket-closed-alert');
     }
 }

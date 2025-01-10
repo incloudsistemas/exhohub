@@ -2026,7 +2026,11 @@ class IndividualResource extends Resource
                                                 return false;
                                             }
 
-                                            if ($user->hasRole('Superadministrador') || $user->hasRole('Administrador')) {
+                                            if (
+                                                $record->property->owner->hasRole('Captador') ||
+                                                $user->hasRole('Superadministrador') ||
+                                                $user->hasRole('Administrador')
+                                            ) {
                                                 return false;
                                             }
 

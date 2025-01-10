@@ -35,6 +35,6 @@ class NewUserApprovedAlert extends Mailable
         return $this->subject("[$appName] $subject")
             ->from($fromEmail, $fromName)
             // ->replyTo($this->data['email'], $this->data['name'])
-            ->markdown('filament.emails.new-user-approved-alert');
+            ->markdown('filament.emails.system.new-user-approved-alert');
     }
 }

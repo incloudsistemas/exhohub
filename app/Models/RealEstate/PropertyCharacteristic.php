@@ -69,14 +69,14 @@ class PropertyCharacteristic extends Model
      *
      */
 
-    public function scopeByStatuses(Builder $query, array $statuses = [1]): Builder
-    {
-        return $query->whereIn('status', $statuses);
-    }
-
     public function scopeByRoles(Builder $query, array $roles): Builder
     {
         return $query->whereIn('role', $roles);
+    }
+
+    public function scopeByStatuses(Builder $query, array $statuses = [1]): Builder
+    {
+        return $query->whereIn('status', $statuses);
     }
 
     /**

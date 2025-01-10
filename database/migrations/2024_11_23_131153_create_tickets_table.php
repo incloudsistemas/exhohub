@@ -30,11 +30,13 @@ return new class extends Migration
             $table->char('priority', 1)->nullable();
             // Ordem
             $table->integer('order')->unsigned()->default(1);
-            // Data em que o chamado finalizou
-            $table->timestamp('finished_at')->nullable();
             // Status
             // 0 - Aguardando Atendimento, 1 - Aberto, 2 - Finalizado
             $table->char('status', 1)->default(1);
+            // Data em que o chamado foi aberto pelo suporte
+            $table->timestamp('opened_at')->nullable();
+            // Data em que o chamado foi finalizado pelo suporte
+            $table->timestamp('closed_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
