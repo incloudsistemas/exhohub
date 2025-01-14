@@ -21,7 +21,7 @@ enum LossReasonEnum: string implements HasLabel
     case NO_CONTACT                  = '10';
     case CONTRACT_DISAGREEMENT       = '11';
     case WITHDREW_FROM_DEAL          = '12';
-    case OTHER                       = '13';
+    case OTHERS                      = '13';
 
     public function getLabel(): string
     {
@@ -38,7 +38,7 @@ enum LossReasonEnum: string implements HasLabel
             self::NO_CONTACT                  => 'Sem contato',
             self::CONTRACT_DISAGREEMENT       => 'Desacordo de contrato',
             self::WITHDREW_FROM_DEAL          => 'Desistiu do negócio',
-            self::OTHER                       => 'Outro',
+            self::OTHERS                      => 'Outros',
         };
     }
 }

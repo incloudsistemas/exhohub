@@ -7,6 +7,7 @@ use App\Models\Activities\Activity;
 use App\Models\Crm\Business\Business;
 use App\Models\Crm\Business\PropertiesInterestProfile;
 use App\Models\Crm\Source;
+use App\Models\Financial\Transaction;
 use App\Models\RealEstate\Property;
 use App\Models\System\User;
 use App\Traits\ClearsResponseCache;
@@ -29,11 +30,6 @@ class Contact extends Model implements HasMedia
 
     protected $table = 'crm_contacts';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'contactable_type',
         'contactable_id',
@@ -48,11 +44,6 @@ class Contact extends Model implements HasMedia
         'custom',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -61,6 +52,11 @@ class Contact extends Model implements HasMedia
             'status'            => DefaultStatusEnum::class,
             'custom'            => 'array',
         ];
+    }
+
+    public function financialTransactions(): HasMany
+    {
+        return $this->hasMany(related: Transaction::class, foreignKey: 'contact_id');
     }
 
     public function activities(): BelongsToMany

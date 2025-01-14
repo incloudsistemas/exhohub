@@ -4,6 +4,7 @@ namespace App\Models\System;
 
 use App\Enums\DefaultStatusEnum;
 use App\Models\Crm\Queues\Queue;
+use App\Models\Financial\BankAccount;
 use App\Observers\System\AgencyObserver;
 use App\Traits\ClearsResponseCache;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,11 +22,6 @@ class Agency extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia, SoftDeletes, ClearsResponseCache;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'slug',
@@ -33,16 +29,16 @@ class Agency extends Model implements HasMedia
         'status',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'status' => DefaultStatusEnum::class,
         ];
+    }
+
+    public function bankAccounts(): HasMany
+    {
+        return $this->hasMany(related: BankAccount::class, foreignKey: 'agency_id');
     }
 
     public function queues(): BelongsToMany

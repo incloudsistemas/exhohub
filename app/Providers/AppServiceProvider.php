@@ -83,6 +83,11 @@ class AppServiceProvider extends ServiceProvider
             'ticket_categories'   => 'App\Models\Support\TicketCategory',
             'ticket_comments'     => 'App\Models\Support\TicketComment',
 
+            'financial_bank_institutions' => 'App\Models\Financial\BankInstitution',
+            'financial_bank_accounts'     => 'App\Models\Financial\BankAccount',
+            'financial_transactions'      => 'App\Models\Financial\Transaction',
+            'financial_categories'        => 'App\Models\Financial\Category',
+
             'addresses' => 'App\Models\Polymorphics\Address',
         ]);
     }

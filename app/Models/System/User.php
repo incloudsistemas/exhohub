@@ -12,6 +12,7 @@ use App\Models\Cms\Post;
 use App\Models\Crm\Business\Business;
 use App\Models\Crm\Contacts\Contact;
 use App\Models\Crm\Queues\Queue;
+use App\Models\Financial\Transaction;
 use App\Models\Polymorphics\Address;
 use App\Models\RealEstate\Property;
 use App\Models\Support\Department;
@@ -41,11 +42,6 @@ class User extends Authenticatable implements FilamentUser, HasMedia
 {
     use HasFactory, Notifiable, HasRoles, InteractsWithMedia, SoftDeletes, ClearsResponseCache;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -64,21 +60,11 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         'status',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -92,6 +78,11 @@ class User extends Authenticatable implements FilamentUser, HasMedia
             'educational_level' => EducationalLevelEnum::class,
             'status'            => UserStatusEnum::class,
         ];
+    }
+
+    public function financialTransactions(): HasMany
+    {
+        return $this->hasMany(related: Transaction::class, foreignKey: 'user_id');
     }
 
     public function ticketComments(): HasMany

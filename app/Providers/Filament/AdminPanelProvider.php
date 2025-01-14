@@ -63,6 +63,8 @@ class AdminPanelProvider extends PanelProvider
                 Navigation\NavigationGroup::make()
                     ->label('CMS & Marketing'),
                 Navigation\NavigationGroup::make()
+                    ->label('Financeiro'),
+                Navigation\NavigationGroup::make()
                     ->label('Suporte'),
                 Navigation\NavigationGroup::make()
                     ->label('Sistema'),
